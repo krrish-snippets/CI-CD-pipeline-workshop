@@ -3,15 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First Website</title>
+    <title>Animated Modern UI Card</title>
+    <style>
+        /* Base Setup & Variables */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-glow: linear-gradient(135deg, #38bdf8, #a855f7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Entrance Animation for the Container */
+        .ui-container {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardEntrance {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* The UI Card Component */
+        .ui-card {
+            background: var(--card-bg);
+            width: 350px;
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Holographic Glow Border Interaction on Hover */
+        .ui-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-glow);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: xor;
+            -webkit-mask-composite: xor;
+            padding: 2px;
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        .ui-card:hover {
+            transform: translateY(-8px) rotateX(2deg);
+            box-shadow: 0 20px 40px rgba(56, 189, 248, 0.15), 0 0 50px rgba(168, 85, 247, 0.1);
+        }
+
+        .ui-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Shimmering Skeleton Loader Screen */
+        .skeleton-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--card-bg);
+            z-index: 5;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeOutLoader 0.5s ease 2.5s forwards; /* Fades out after 2.5 seconds */
+            pointer-events: none;
+        }
+
+        .skeleton-item {
+            background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @keyframes fadeOutLoader {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* Core UI Content Elements */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-glow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
+        }
+
+        .user-info h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .card-body {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Dynamic Progress Bar Micro-animation */
+        .progress-container {
+            margin-top: 16px;
+        }
+
+        .progress-bar-bg {
+            background: #334155;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-glow);
+            width: 0%;
+            border-radius: 3px;
+            /* Starts expanding after the skeleton loader disappears */
+            animation: fillProgress 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2.8s forwards;
+        }
+
+        @keyframes fillProgress {
+            to { width: 78%; }
+        }
+
+        /* Interactive Liquid Button Action */
+        .action-btn {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-glow);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease-out;
+            pointer-events: none;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn:focus::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Welcome to My Website</h1>
-    <p>This is a simple HTML paragraph text.</p>
-    <p> I have made some changes in the code </p>
-    <p>Krrish Bhardwaj</p>
-    
+    <div class="ui-container">
+        <div class="ui-card">
+            
+            <!-- 1. Skeleton Loading Screen Element -->
+            <div class="skeleton-overlay">
+                <div class="card-header" style="margin-bottom: 0;">
+                    <div class="skeleton-item" style="width: 50px; height: 50px; border-radius: 50%;"></div>
+                    <div class="user-info" style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+                        <div class="skeleton-item" style="width: 60%; height: 16px;"></div>
+                        <div class="skeleton-item" style="width: 40%; height: 12px;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-item" style="width: 100%; height: 80px; border-radius: 16px; margin-top: 8px;"></div>
+                <div class="skeleton-item" style="width: 100%; height: 45px; border-radius: 12px; margin-top: auto;"></div>
+            </div>
 
-</body>
-</html>
+            <!-- 2. Actual UI Card Content -->
+            <div class="card-header">
+                <div class="avatar">AI</div>
+                <div class="user-info">
+                    <h3>Alex Interface</h3>
+                    <p>System Designer</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="stat-box">
+                    <div>
+                        <div class="stat-label">Performance</div>
+                        <div class="stat-value">94.2%</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="stat-label" style="color: #38bdf8;">Status</div>
+                        <div class="stat-label" style="color: #f8fafc; font-weight: bold; margin-top: 4px;">Optimal</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span class="stat-label" style="font-size: 0.75rem;">Task Allocation</span>
+                        <span class="stat-label" style="font-size: 0.75rem; color: #a855f7;">78%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+
